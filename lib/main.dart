@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names, curly_braces_in_flow_control_structures
 
 import 'dart:math';
 import 'dart:async';
@@ -34,16 +34,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<int> corresponding = [
-    9,
-    8,
-    7,
-    6,
-    5,
-    4,
-    2,
-    9
-  ]; //List.generate(5, (index) => Random().nextInt(9));
+  List<int> corresponding = [9, 8, 7, 6, 5, 4, 2, 9];
+  String selectedSort = "Selection Sort";
   String message = "Preparing Insertion Sort";
   int swapIndex1 = -1;
   int minIndex = -1;
@@ -76,6 +68,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void insertionSort() async {
+    int n = corresponding.length;
+    for (var i = 0; i < n; i++) {
+      for (var j = i; j > 0; j--) {
+        if (corresponding[j] < corresponding[j - 1]) {
+          setState(() {
+            message =
+                "Swapping ${corresponding[j]}  @index $j and Swapping ${corresponding[j - 1]}  @index ${j - 1} ";
+            var tmp = corresponding[j - 1];
+            corresponding[j - 1] = corresponding[j];
+            corresponding[j] = tmp;
+          });
+        }
+        await Future.delayed(Duration(seconds: 1), () {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              selectionSort();
+              if (selectedSort == "Selection Sort") selectionSort();
+              if (selectedSort == "Insertion Sort") insertionSort();
             },
             child: Icon(Icons.play_arrow),
           ),
@@ -106,8 +117,25 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'Select the visualizer you want',
             ),
+            DropdownButton(
+                items: [
+                  DropdownMenuItem(
+                    value: "Selection Sort",
+                    child: Text("Selection Sort"),
+                  ),
+                  DropdownMenuItem(
+                    value: "Insertion Sort",
+                    child: Text("Insertion Sort"),
+                  )
+                ],
+                value: selectedSort,
+                onChanged: (val) {
+                  setState(() {
+                    selectedSort = val!;
+                  });
+                }),
             SizedBox(
               height: 20,
             ),
@@ -124,14 +152,27 @@ class _MyHomePageState extends State<MyHomePage> {
                           Column(
                             children: [
                               Text(corresponding[i].toString()),
-                              Container(
-                                height: 200 * ((corresponding[i]) / 10),
-                                width: 40,
-                                color: Colors.black,
-                              ),
-                              Visibility(
-                                  visible: swapIndex1 == i || minIndex == i,
-                                  child: Icon(Icons.arrow_circle_up_outlined))
+                              if (selectedSort == "Selection Sort")
+                                Column(
+                                  children: [
+                                    Container(
+                                      height: 200 * ((corresponding[i]) / 10),
+                                      width: 40,
+                                      color: Colors.black,
+                                    ),
+                                    Visibility(
+                                        visible:
+                                            swapIndex1 == i || minIndex == i,
+                                        child: Icon(
+                                            Icons.arrow_circle_up_outlined))
+                                  ],
+                                ),
+                              if (selectedSort == "Insertion Sort")
+                                Container(
+                                  height: 200 * (corresponding[i] / 10),
+                                  width: 40,
+                                  color: Colors.blue,
+                                )
                             ],
                           ),
                           SizedBox(
