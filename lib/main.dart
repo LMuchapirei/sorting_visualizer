@@ -81,7 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
             corresponding[j] = tmp;
           });
         }
-        await Future.delayed(Duration(seconds: 1), () {});
+        await Future.delayed(Duration(seconds: 1),
+            () {}); // TODO: fix a bug when you place reset it continues to do the sorting
       }
     }
   }
